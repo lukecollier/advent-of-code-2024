@@ -40,7 +40,7 @@ pub fn part_one(input: &str) -> Option<usize> {
 }
 
 pub fn part_two(input: &str) -> Option<usize> {
-    let mut world = XYWorld::from_str(input);
+    let world = XYWorld::from_str(input);
     let mut points: HashSet<(usize, usize)> = HashSet::new();
     let mut antennas: HashMap<char, Vec<(usize, usize)>> = HashMap::new();
     for x in 0..world.width {
@@ -72,7 +72,6 @@ pub fn part_two(input: &str) -> Option<usize> {
             }
         }
     }
-    world.draw_points(points.iter().copied().collect_vec(), '#');
     Some(points.len())
 }
 
