@@ -32,7 +32,7 @@ impl Debug for XYWorld {
 
 impl XYWorld {
     pub fn contains(&self, x: isize, y: isize) -> bool {
-        x >= 0 && y >= 0 && x <= self.width as isize && y <= self.height as isize
+        x >= 0 && y >= 0 && x < self.width as isize && y < self.height as isize
     }
 
     pub fn is_outside(&self, x: isize, y: isize) -> bool {
