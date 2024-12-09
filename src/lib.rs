@@ -4,10 +4,12 @@ pub mod template;
 
 use std::fmt::{Debug, Display, Write};
 
+use itertools::Itertools;
+
 pub struct XYWorld {
     world: Vec<Vec<char>>,
-    height: usize,
-    width: usize,
+    pub height: usize,
+    pub width: usize,
 }
 
 impl Display for XYWorld {
@@ -29,6 +31,10 @@ impl Debug for XYWorld {
 }
 
 impl XYWorld {
+    pub fn contains(&self, x: isize, y: isize) -> bool {
+        x >= 0 && y >= 0 && x <= self.width as isize && y <= self.height as isize
+    }
+
     pub fn is_outside(&self, x: isize, y: isize) -> bool {
         x < 0 || y < 0 || x > self.width as isize || y > self.height as isize
     }
@@ -44,7 +50,7 @@ impl XYWorld {
         None
     }
 
-    pub fn draw_path(&mut self, path: Vec<(usize, usize)>, value: char) {
+    pub fn draw_points(&mut self, path: Vec<(usize, usize)>, value: char) {
         for (x, y) in path {
             if let Some(row) = self.world.get_mut(y) {
                 if let Some(ch) = row.get_mut(x) {
