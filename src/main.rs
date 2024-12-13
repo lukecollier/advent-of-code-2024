@@ -1,5 +1,3 @@
-#![feature(iter_intersperse)]
-
 use advent_of_code::template::commands::{all, download, read, scaffold, solve, time};
 use args::{parse, AppArguments};
 

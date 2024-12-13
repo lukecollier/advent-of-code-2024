@@ -1,5 +1,3 @@
-#![feature(iter_intersperse)]
-
 pub mod template;
 
 use std::fmt::{Debug, Display, Write};
