@@ -1,10 +1,7 @@
-use std::{collections::HashMap, time::Instant};
+use std::collections::HashMap;
 
 use itertools::Itertools;
-use rayon::{
-    iter::{IndexedParallelIterator, IntoParallelRefIterator, ParallelIterator},
-    slice::ParallelSlice,
-};
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 advent_of_code::solution!(11);
 
