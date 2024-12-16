@@ -6,7 +6,7 @@ use itertools::Itertools;
 advent_of_code::solution!(8);
 
 pub fn part_one(input: &str) -> Option<usize> {
-    let world = XYWorld::from_str(input);
+    let world: XYWorld<char> = XYWorld::<char>::from_str(input);
     let mut points: HashSet<(usize, usize)> = HashSet::new();
     let mut antennas: HashMap<char, Vec<(usize, usize)>> = HashMap::new();
     for x in 0..world.width {
@@ -40,7 +40,7 @@ pub fn part_one(input: &str) -> Option<usize> {
 }
 
 pub fn part_two(input: &str) -> Option<usize> {
-    let world = XYWorld::from_str(input);
+    let world = XYWorld::<char>::from_str(input);
     let mut points: HashSet<(usize, usize)> = HashSet::new();
     let mut antennas: HashMap<char, Vec<(usize, usize)>> = HashMap::new();
     for x in 0..world.width {

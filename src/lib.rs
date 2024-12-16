@@ -1,20 +1,21 @@
 pub mod template;
 
-use std::fmt::{Debug, Display, Write};
+use std::{
+    fmt::{Debug, Display, Write},
+    str::FromStr,
+};
 
-use itertools::Itertools;
-
-pub struct XYWorld {
-    world: Vec<Vec<char>>,
+pub struct XYWorld<A> {
+    world: Vec<Vec<A>>,
     pub height: usize,
     pub width: usize,
 }
 
-impl Display for XYWorld {
+impl<A: Display> Display for XYWorld<A> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for y in 0..self.height {
             for x in 0..self.width {
-                f.write_char(*self.get(x, y).unwrap())?;
+                write!(f, "{}", *self.get(x, y).unwrap())?;
             }
             f.write_char('\n')?;
         }
@@ -22,13 +23,13 @@ impl Display for XYWorld {
     }
 }
 
-impl Debug for XYWorld {
+impl<A: Display> Debug for XYWorld<A> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&self, f)
     }
 }
 
-impl XYWorld {
+impl<A> XYWorld<A> {
     pub fn contains(&self, x: isize, y: isize) -> bool {
         x >= 0 && y >= 0 && x < self.width as isize && y < self.height as isize
     }
@@ -37,7 +38,10 @@ impl XYWorld {
         x < 0 || y < 0 || x > self.width as isize || y > self.height as isize
     }
 
-    pub fn find_first(&self, ch: &char) -> Option<(usize, usize)> {
+    pub fn find_first(&self, ch: &A) -> Option<(usize, usize)>
+    where
+        A: PartialEq + Eq,
+    {
         for (y, row) in self.world.iter().enumerate() {
             for (x, el) in row.iter().enumerate() {
                 if el == ch {
@@ -48,7 +52,10 @@ impl XYWorld {
         None
     }
 
-    pub fn draw_points(&mut self, path: Vec<(usize, usize)>, value: char) {
+    pub fn draw_points(&mut self, path: Vec<(usize, usize)>, value: A)
+    where
+        A: Copy,
+    {
         for (x, y) in path {
             if let Some(row) = self.world.get_mut(y) {
                 if let Some(ch) = row.get_mut(x) {
@@ -58,29 +65,43 @@ impl XYWorld {
         }
     }
 
-    pub fn get(&self, x: usize, y: usize) -> Option<&char> {
+    pub fn get(&self, x: usize, y: usize) -> Option<&A> {
         self.world.get(y).and_then(|column| column.get(x))
     }
 
-    pub fn get_unsafe(&self, x: usize, y: usize) -> char {
-        self.world[y][x]
+    pub fn get_unsafe(&self, x: usize, y: usize) -> &A {
+        &self.world[y][x]
     }
 
-    pub fn update_unsafe(&mut self, x: usize, y: usize, ch: char) {
+    pub fn update_unsafe(&mut self, x: usize, y: usize, ch: A) {
         self.world[y][x] = ch;
     }
 
-    pub fn from_str(str: &str) -> XYWorld {
-        let mut world: Vec<Vec<char>> = vec![];
+    pub fn blank(width: usize, height: usize) -> XYWorld<char> {
+        let world = vec![vec!['.'; width]; height];
+        XYWorld {
+            world,
+            height,
+            width,
+        }
+    }
+
+    pub fn from_str<B: FromStr>(str: &str) -> XYWorld<B> {
+        let mut world: Vec<Vec<B>> = vec![];
         let mut width = 0;
         for line in str.lines() {
-            let chars = line.chars().collect::<Vec<_>>();
+            let chars = line
+                .chars()
+                .map(|ch| ch.to_string())
+                .filter_map(|ch| ch.parse::<B>().ok())
+                .collect::<Vec<B>>();
             width = chars.len();
             world.push(chars);
         }
+        let height = world.len();
         XYWorld {
-            world: world.clone(),
-            height: world.len(),
+            world,
+            height,
             width,
         }
     }

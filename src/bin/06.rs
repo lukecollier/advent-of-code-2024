@@ -15,7 +15,7 @@ fn rotate_velocity(x: isize, y: isize) -> (isize, isize) {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let world = XYWorld::from_str(input);
+    let world: XYWorld<char> = XYWorld::<char>::from_str(input);
     let (mut x, mut y) = world.find_first(&'^').expect("start point not found");
     let (mut v_x, mut v_y) = (0_isize, -1_isize);
     let mut path: HashSet<(usize, usize)> = HashSet::new();
@@ -64,7 +64,7 @@ impl Guard {
 
 //todo to increase the speed of the algorithm we simply need to on search along the path where a
 //the 90 degree position would hit another blocker.
-fn find_path(world: &XYWorld) -> HashSet<(usize, usize)> {
+fn find_path(world: &XYWorld<char>) -> HashSet<(usize, usize)> {
     let (mut x, mut y) = world.find_first(&'^').expect("start point not found");
     let (mut v_x, mut v_y) = (0_isize, -1_isize);
     let mut path: HashSet<(usize, usize)> = HashSet::new();
@@ -87,7 +87,7 @@ fn find_path(world: &XYWorld) -> HashSet<(usize, usize)> {
     return path;
 }
 
-fn has_cycle(world: &XYWorld) -> bool {
+fn has_cycle(world: &XYWorld<char>) -> bool {
     let (x, y) = world.find_first(&'^').expect("start point not found");
     let mut guard = Guard::new(x, y, 0_isize, -1_isize);
     let mut path: Vec<Guard> = Vec::new();
@@ -114,7 +114,7 @@ fn has_cycle(world: &XYWorld) -> bool {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let mut world = XYWorld::from_str(input);
+    let mut world = XYWorld::<char>::from_str(input);
     let mut path = find_path(&world);
     let start = world.find_first(&'^').expect("start point not found");
     path.remove(&start);
