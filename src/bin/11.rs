@@ -38,7 +38,6 @@ pub fn part_two(input: &str) -> Option<usize> {
     let lines = init_line.par_iter().flat_map(|stone| {
         let mut line: HashMap<String, usize> = HashMap::new();
         line.insert(stone.to_string(), 1);
-        let started_at = Instant::now();
         for _ in 0..75 {
             let line_iter = line.iter_mut();
             let mut next_line: HashMap<String, usize> = HashMap::new();
