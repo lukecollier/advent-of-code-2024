@@ -99,12 +99,6 @@ pub fn part_two(input: &str) -> Option<usize> {
     let numbers = input
         .chars()
         .filter_map(|num| num.to_string().parse::<usize>().ok())
-        .enumerate()
-        .collect_vec();
-    dbg!(numbers);
-    let numbers = input
-        .chars()
-        .filter_map(|num| num.to_string().parse::<usize>().ok())
         .enumerate();
     let mut disk: Vec<Block> = Vec::new();
     for (index, amount) in numbers {

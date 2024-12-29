@@ -135,6 +135,14 @@ impl<A> XYWorld<A> {
         ]
     }
 
+    pub fn bitmask(&self, x: isize, y: isize, mask: A) -> [[bool; 3]; 3]
+    where
+        A: PartialEq,
+    {
+        self.neighbours(x, y)
+            .map(|row| row.map(|v| v.is_some_and(|some| *some == mask)))
+    }
+
     pub fn neighbours(&self, x: isize, y: isize) -> [[Option<&A>; 3]; 3] {
         [
             [
@@ -190,10 +198,33 @@ impl<A> XYWorld<A> {
         }
     }
 
+    pub fn draw_between(&mut self, from: (usize, usize), to: (usize, usize), value: A)
+    where
+        A: Copy,
+    {
+        let (lx, ly) = from;
+        let (rx, ry) = to;
+        for x in lx.min(rx)..=rx.max(lx) {
+            self.update_unsafe(x, ry, value);
+        }
+        for y in ly.min(ry)..=ry.max(ly) {
+            self.update_unsafe(rx, y, value);
+        }
+    }
+
     pub fn get_isize(&self, x: isize, y: isize) -> Option<&A> {
         let x_usize: usize = x.try_into().ok()?;
         let y_usize: usize = y.try_into().ok()?;
         self.get(x_usize, y_usize)
+    }
+
+    pub fn reset(&mut self, to: A)
+    where
+        A: Clone,
+    {
+        let world = vec![vec![to; self.width]; self.height];
+        self.world.clear();
+        self.world = world;
     }
 
     pub fn get_mut(&mut self, x: isize, y: isize) -> Option<&mut A> {
@@ -214,6 +245,15 @@ impl<A> XYWorld<A> {
 
     pub fn update_unsafe(&mut self, x: usize, y: usize, ch: A) {
         self.world[y][x] = ch;
+    }
+
+    pub fn grid(width: usize, height: usize) -> XYWorld<bool> {
+        let world = vec![vec![false; width]; height];
+        XYWorld {
+            world,
+            height,
+            width,
+        }
     }
 
     pub fn blank(width: usize, height: usize) -> XYWorld<char> {
