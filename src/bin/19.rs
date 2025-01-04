@@ -1,3 +1,5 @@
+use std::collections::{HashMap, HashSet};
+
 use itertools::Itertools;
 
 advent_of_code::solution!(19);
@@ -8,26 +10,37 @@ pub fn part_one(input: &str) -> Option<u32> {
     assert!(lines.next().is_some_and(|line| line.is_empty()));
     let mut successes = 0;
     for line in lines {
-        let mut start = 0;
-        while start < line.len() {
-            let mut found = false;
-            for end in (start..=line.len()).rev() {
-                if let Some(pattern) = line.get(start..end) {
-                    println!("searching for: {}", pattern);
-                    if patterns.contains(&pattern) {
-                        println!("found at: {}", start);
-                        start = end;
-                        if start == line.len() {
-                            successes += 1;
-                        }
-                        found = true;
+        let mut ranges: HashMap<usize, Vec<usize>> = HashMap::new();
+        for pattern in &patterns {
+            let mut idx = 0;
+            for chunk in line.chars().collect_vec().windows(pattern.len()) {
+                let str = chunk.iter().collect::<String>();
+                if &str == pattern {
+                    ranges
+                        .entry(idx)
+                        .and_modify(|m| m.push(idx + pattern.len()))
+                        .or_insert(vec![idx + pattern.len()]);
+                }
+                idx += 1;
+            }
+        }
+        // If no range starts at 0 we've done nothing
+        let mut seen: HashSet<usize> = HashSet::new();
+        if let Some(mut next_up) = ranges.get(&0).cloned() {
+            while let Some(start_at) = next_up.pop() {
+                if seen.insert(start_at) {
+                    if start_at == line.len() {
+                        successes += 1;
+                        next_up.clear();
                         break;
                     }
+                    if let Some(range) = ranges.get_mut(&start_at) {
+                        for next in range {
+                            next_up.push(*next);
+                        }
+                        next_up.sort();
+                    }
                 }
-            }
-            if !found {
-                // if we haven't found, we're finished
-                break;
             }
         }
     }
