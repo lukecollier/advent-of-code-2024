@@ -150,15 +150,13 @@ pub fn part_one(input: &str) -> Option<usize> {
 }
 
 pub fn part_two(input: &str) -> Option<usize> {
-    let mut world = XYWorld::<char>::from_str::<char>(input);
+    let world = XYWorld::<char>::from_str::<char>(input);
     let (mut cx, mut cy) = (0_isize, 0_isize);
-    let (mut ix, mut iy) = (0_isize, 0_isize);
     let (mut gx, mut gy) = (0_isize, 0_isize);
     for x in 0..world.width {
         for y in 0..world.height {
             if *world.get_unsafe(x, y) == 'S' {
                 (cx, cy) = (x as isize, y as isize);
-                (ix, iy) = (x as isize, y as isize);
             }
             if *world.get_unsafe(x, y) == 'E' {
                 (gx, gy) = (x as isize, y as isize);

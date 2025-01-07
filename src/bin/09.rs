@@ -1,8 +1,6 @@
 #![feature(iter_array_chunks)]
 
-use std::{collections::VecDeque, fs::File, io::Write};
-
-use itertools::Itertools;
+use std::collections::VecDeque;
 
 advent_of_code::solution!(9);
 

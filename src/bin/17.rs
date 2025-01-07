@@ -1,5 +1,3 @@
-use std::time::Instant;
-
 use itertools::Itertools;
 
 advent_of_code::solution!(17);
@@ -15,32 +13,6 @@ pub struct Computer {
 }
 
 impl Computer {
-    fn binary(&self) -> String {
-        let Computer {
-            register_a,
-            register_b,
-            register_c,
-            program: _,
-            output,
-            instruction_pointer: _,
-        } = self;
-        let output_octals = output.iter().map(|num| format!("{num:b}")).join(",");
-        format!("a({register_a:b}) b({register_b:b}) c({register_c:b}) output={output_octals}")
-    }
-
-    fn oct(&self) -> String {
-        let Computer {
-            register_a: _,
-            register_b: _,
-            register_c: _,
-            program: _,
-            output,
-            instruction_pointer: _,
-        } = self;
-        let output_octals = output.iter().map(|num| format!("{num:o}")).join(",");
-        format!("output={output_octals}")
-    }
-
     fn combo(&self, operand: u8) -> usize {
         match operand {
             literal if literal <= 3 => literal as usize,

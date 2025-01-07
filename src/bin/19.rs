@@ -1,9 +1,4 @@
-use std::{
-    collections::{BinaryHeap, HashMap, HashSet, VecDeque},
-    fmt::Binary,
-    thread::sleep,
-    time::Duration,
-};
+use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
 
 use itertools::Itertools;
 
@@ -100,11 +95,11 @@ pub fn part_two(input: &str) -> Option<usize> {
 mod tests {
     use super::*;
 
-    // #[test]
-    // fn test_part_one() {
-    //     let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-    //     assert_eq!(result, Some(6));
-    // }
+    #[test]
+    fn test_part_one() {
+        let result = part_one(&advent_of_code::template::read_file("examples", DAY));
+        assert_eq!(result, Some(6));
+    }
 
     #[test]
     fn test_part_two() {

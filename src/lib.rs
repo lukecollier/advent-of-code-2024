@@ -6,6 +6,82 @@ use std::{
     str::FromStr,
 };
 
+#[derive(Debug, Clone)]
+pub struct BinaryGrid {
+    world: Vec<Vec<bool>>,
+    width: usize,
+    height: usize,
+}
+
+impl BinaryGrid {
+    pub fn from_str<F>(str: &str, f: F) -> BinaryGrid
+    where
+        F: Fn(char) -> bool,
+    {
+        let mut world: Vec<Vec<bool>> = Vec::new();
+        let mut width = 0;
+        for char in str.lines().map(|line| line.chars()) {
+            let row = char.map(|ch| f(ch)).collect::<Vec<_>>();
+            width = row.len();
+            world.push(row);
+        }
+        let height = world.len();
+        BinaryGrid {
+            world,
+            width,
+            height,
+        }
+    }
+
+    pub fn get_mut(&mut self, x: isize, y: isize) -> Option<&mut bool> {
+        if x >= 0 && y >= 0 {
+            let x = x as usize;
+            let y = y as usize;
+            if x < self.width && y < self.height {
+                self.world
+                    .get_mut(y as usize)
+                    .and_then(|row| row.get_mut(x as usize))
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+
+    pub fn get(&self, x: isize, y: isize) -> Option<bool> {
+        if x >= 0 && y >= 0 {
+            let x = x as usize;
+            let y = y as usize;
+            if x < self.width && y < self.height {
+                Some(self.world[y as usize][x as usize])
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+}
+
+impl Display for BinaryGrid {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                if self.get(x as isize, y as isize).is_none_or(|res| res) {
+                    write!(f, "#")?;
+                } else {
+                    write!(f, ".")?;
+                }
+            }
+            if y < (self.height - 1) {
+                f.write_char('\n')?;
+            }
+        }
+        Ok(())
+    }
+}
+
 #[derive(Debug)]
 pub struct Rect<A> {
     bot_left: (A, A),

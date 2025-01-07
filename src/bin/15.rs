@@ -1,6 +1,3 @@
-use std::fs::File;
-use std::io::Write;
-
 use advent_of_code::XYWorld;
 
 advent_of_code::solution!(15);
